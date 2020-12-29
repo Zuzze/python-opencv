@@ -9,11 +9,7 @@ print(img)
 # --- SQUARE IMAGE BACKGROUND ---
 # [:] => whole image displayed (all cols and rows of matrix)
 # 255, 0, 0 => Blue image
-'''
 img[:] = 255,0,0
-cv2.imshow("Image", img)
-cv2.waitKey(0)
-'''
 
 # --- GREEN LINE ---
 # (img, startPoint, endPoint, lineColor, thickness)
