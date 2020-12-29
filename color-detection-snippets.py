@@ -34,7 +34,7 @@ def stackImages(scale,imgArray):
 
 
 
-path = 'Resources/cars.jpg'
+path = 'Resources/testImage.jpg'
 
 # --- COLOR DETECTION ---
 # 1) convert image to HSV
