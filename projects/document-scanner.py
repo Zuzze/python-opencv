@@ -13,7 +13,7 @@ from utils import stackImages
 # Using a Gaussian Blur filter before edge detection aims to reduce the level of noise in the image,
 # which improves the result of the following edge-detection algorithm
 # 4) Find edges using Canny edge detection https://docs.opencv.org/master/da/d22/tutorial_py_canny.html
-# 5) Add 2 dilation and 1 erosion to thicken edges
+# 5) Add 2 dilations and 1 erosion to thicken edges
 # 6) Find biggest contour (same-coloured area) that has 4 corners
 # 7) Warp paper to fix potential distortion and get birds-eye view
 #
