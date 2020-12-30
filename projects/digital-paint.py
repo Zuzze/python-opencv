@@ -121,9 +121,15 @@ while True:
 
     # CLOSE APP
     # close app pressing q for quit
-    # waitKey(0) will display the window infinitely
-    # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed
+    # waitKey(0) will wait infinitely for keyPress on your keyboard and will not refresh the frame (cap.read()) using webcam
+    # waitKey(1) will wait for keyPress for just 1 millisecond and it will continue to refresh and read frame from your webcam using cap.read().
     # due to "while True", each frame is displayed 1ms infinitely
+    #
+    # 0xFF is a hexadecimal constant which is 11111111 in binary.
+    # By using bitwise AND (&) with this constant, it leaves only the last 8 bits of the original
+    # (in this case, whatever cv2.waitKey(1) is).
+    # As a result, an integer is obtained max 255 (0-255).
+    # ord(char) returns the ASCII value of the character which would be again maximum 255.
     if cv2.waitKey(1) & 0xFF == ord('q'):
         print("App closed by the user")
         break
