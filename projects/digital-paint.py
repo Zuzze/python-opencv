@@ -20,7 +20,7 @@ cap.set(10,150)
 # PAINT CONFIG
 penTipThickness = 10
 penCursorSize = 15
-canvasPoints = []  ## [x , y , colorId ]
+canvasPoints = [] # in format[x , y , colorId ]
 
 # DETECTED COLORS
 # setup colors you want to detect
@@ -51,8 +51,8 @@ def getColorPoints(img, detectedColors, paintColors):
     # convert color to HSV
     imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    # start from first detected color (id=0) and increase id always when moving to next color
-    colorId = 0
+    # start from first detected color (i=0) and increase i always when moving to next color
+    colorIndex = 0
     newPoints = []
     for color in detectedColors:
         # set upper and lower limits and display detected color using mask
@@ -62,12 +62,14 @@ def getColorPoints(img, detectedColors, paintColors):
         x, y = getContours(mask)
 
         # set paint to be circles
+        cv2.circle(imgResult,(x,y), penCursorSize, paintColors[colorIndex], cv2.FILLED)
 
-        cv2.circle(imgResult,(x,y), penCursorSize, paintColors[colorId], cv2.FILLED)
+        # do not add points if position has not changed
         if x != 0 and y != 0:
-            newPoints.append([x,y,colorId])
-        colorId += 1
+            newPoints.append([x, y, colorIndex])
+        colorIndex += 1
         #cv2.imshow(str(color[0]),mask)
+
     return newPoints
 
 # contour -> area that has same color
@@ -106,9 +108,11 @@ while True:
     newPoints = getColorPoints(img, detectedColors, paintColors)
 
     # IF TRACKED COLORS DETECTED => DRAW COLOR PATH TO CANVAS
+    # check if new points was detected
     if len(newPoints) != 0:
         for newPoint in newPoints:
             canvasPoints.append(newPoint)
+    # draw points on canvas
     if len(canvasPoints) != 0:
         drawOnCanvas(canvasPoints, paintColors)
 
@@ -117,6 +121,9 @@ while True:
 
     # CLOSE APP
     # close app pressing q for quit
+    # waitKey(0) will display the window infinitely
+    # waitKey(1) will display a frame for 1 ms, after which display will be automatically closed
+    # due to "while True", each frame is displayed 1ms infinitely
     if cv2.waitKey(1) & 0xFF == ord('q'):
         print("App closed by the user")
         break
