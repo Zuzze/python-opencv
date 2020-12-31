@@ -27,10 +27,11 @@ paperArea = 0
 
 # WEBCAM SETUP
 # Camera Id can be 0 or 1 depending on your machine
-capture = cv2.VideoCapture(1)
-capture.set(3, imgWidth)
-capture.set(4, imgHeight )
+capture = cv2.VideoCapture(0)
+capture.set(3, imgHeight)
+capture.set(4, imgWidth)
 capture.set(10, 150)
+
 
 # prepares image edges to be white and rest of the image to be black
 def preProcessing(img):
@@ -101,27 +102,29 @@ def getWarp(img, biggestContourCornerPoints):
 
 while True:
     success, img = capture.read()
-    img = cv2.resize(img, (imgWidth, imgHeight))
-    imgContour = img.copy()
+    try:
+        img = cv2.resize(img, (640, 480))
+        imgContour = img.copy()
+        imgThres = preProcessing(img)
+        biggestContourCornerPoints = getContours(imgThres)
+        # warp image only if contours found
+        if biggestContourCornerPoints.size != 0:
+            imgWarped = getWarp(img, biggestContourCornerPoints)
+            imageArray = ([img, imgThres], [imgContour, imgWarped])
+            # imageArray = ([imgContour, imgWarped])
+            # display warped (scanned) image in its own window
+            print("Area of biggest contour: ")
+            print(paperArea)
+            cv2.imshow("ImageWarped", imgWarped)
+        else:
+            # display original image if contour not found
+            imageArray = ([img, imgThres], [img, img])
 
-    imgThres = preProcessing(img)
-    biggestContourCornerPoints = getContours(imgThres)
-    # warp image only if contours found
-    if biggestContourCornerPoints.size != 0:
-        imgWarped = getWarp(img, biggestContourCornerPoints)
-        imageArray = ([img, imgThres], [imgContour, imgWarped])
-        #imageArray = ([imgContour, imgWarped])
-        # display warped (scanned) image in its own window
-        print("Area of biggest contour: ")
-        print(paperArea)
-        cv2.imshow("ImageWarped", imgWarped)
-    else:
-        # display original image if contour not found
-        imageArray = ([img, imgThres], [img, img])
-
-
-    stackedImages = stackImages(0.6, imageArray)
-    cv2.imshow("WorkFlow", stackedImages)
+        stackedImages = stackImages(0.6, imageArray)
+        cv2.imshow("WorkFlow", stackedImages)
+    except Exception as e:
+        print(str(e))
+        break
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
